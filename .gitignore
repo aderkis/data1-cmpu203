@@ -1,12 +1,91 @@
-*.class
+interface BST {
+    String toString();
+    int cardinality();
+    boolean isBranch();
+    boolean isEmptyHuh();
+    boolean member(int elt);
+    BST add(int elt);
+}
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+class Branch implements BST {
+    BST left;
+    int key;
+    BST right;
+    
+    Branch (BST left, int key, BST right) {
+        this.left = left;
+        this.key = key;
+        this.right = right;
+    }
+    
+    public String toString() {
+        String theKey = ("" + this.key);
+        return theKey;
+    }
+    
+    public boolean isBranch() {
+        return true;
+    }
+    
+    public int cardinality() {
+        int count = 0;
+        if (this.left.isBranch()) {
+            count = count + this.left.cardinality();
+        }
+        if (this.right.isBranch()) {
+            count = count + this.right.cardinality();
+        }
+        count = count + 1;
+        return count;
+    }
+    
+    public boolean isEmptyHuh() {
+        return false;
+    }
+    
+    public boolean member(int elt) {
+        boolean isIt = false;
+        if (elt == this.key) {
+            isIt = true;
+        }
+        if (this.left.isBranch() && isIt == false) {
+            isIt = this.left.member(elt);
+        }
+        if (this.right.isBranch() && isIt == false) {
+            isIt = this.right.member(elt);
+        }
+        return isIt;
+    }   
+}
 
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+class Empty implements BST {
+    
+    Empty() {}
+    
+    public String toString() {
+        String theKey = ("empty");
+        return theKey;
+    }
+    
+    public int cardinality() {
+        return 0;
+    }
+    
+    public boolean isBranch() {
+        return false;
+    }
+    
+    public boolean isEmptyHuh() {
+        return true;
+    }
+    
+    public boolean member(int elt) {
+        return false;
+    }
+    
+    public BST add(int elt) {
+        BST bot = new Empty();
+        BST addElt = new Branch(bot, elt, bot);
+        return addElt;
+    }
+}
