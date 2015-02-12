@@ -146,6 +146,27 @@ class Empty implements BST {
 }
 
 class Tests {
+
+    //cardinality (union u t) = cardinality (t) + cardinality (u) - cardinality (inter u t)
+    public static boolean unionTest(BST t, BST u) {
+	return t.union(u).cardinality() == t.cardinality() + u.cardinality() - t.inter(u).cardinality();
+    }
+   
+    //member (add t x) y = true <-> x = y \/ member t y = true
+    public static boolean addMemberTest(BST t, int x, int y) {
+	return t.add(x).member(y) == (x == y || t.member(y));
+    } 
+
+    //member (union s s') x = true <-> member s x = true \/ member s' x = true
+    public static boolean unionMemberTest(BST t, BST u, int x) {
+	return t.union(u).member(x) == (t.member(x) || u.member(x));
+    }
+    
+    //member (inter s s') x = true <-> member s x = true /\ member s' x = true
+    public static boolean interMemberTest(BST t, BST u, int x) {
+	return t.inter(u).member(x) == (t.member(x) && u.member(x));
+    }
+
     public static void main( String[] args ) {
         
         // BST example
