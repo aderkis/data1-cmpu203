@@ -19,7 +19,7 @@ class Branch implements BST {
     }
     
     public String toString() {
-        String theKey = ("" + this.key);
+        String theKey = ("(" + this.key + this.left.toString() + this.right.toString() + ")");
         return theKey;
     }
     
@@ -28,15 +28,7 @@ class Branch implements BST {
     }
     
     public int cardinality() {
-        int count = 0;
-        if (this.left.isBranch()) {
-            count = count + this.left.cardinality();
-        }
-        if (this.right.isBranch()) {
-            count = count + this.right.cardinality();
-        }
-        count = count + 1;
-        return count;
+        return 1 + this.left.cardinality() + this.right.cardinality();
     }
     
     public boolean isEmptyHuh() {
@@ -44,18 +36,57 @@ class Branch implements BST {
     }
     
     public boolean member(int elt) {
-        boolean isIt = false;
         if (elt == this.key) {
-            isIt = true;
+            return true;
+        } else if (elt < this.key) {
+            return this.left.member(elt);
+        } else {
+            return this.right.member(elt);
+    }
+    
+    public BST add(int elt) {
+        if (elt == this.key) {
+            return this;
+        } else if (elt < this.key) {
+            return new Branch(this.left.add(elt), this.key, this.right);
+        } else {
+            return new Branch(this.left, this.key, this.right.add(elt));
         }
-        if (this.left.isBranch() && isIt == false) {
-            isIt = this.left.member(elt);
+    }
+    
+    public BST remove(int elt) {
+        if (elt < this.key) {
+            return new Branch(this.left.remove(elt),this.key, this.right);
+        } else if (elt > this.key) {
+            return new Branch(this.left, this.key, this.right.remove(elt));
+        } else {
+            return this.left.union(this.right);
         }
-        if (this.right.isBranch() && isIt == false) {
-            isIt = this.right.member(elt);
+    }
+    
+    public BST union(BST u) {
+        return u.union(this.left).union(this.right).add(this.key);
+    }
+    
+    public BST inter(BST u) {
+        if(u.member(this.key)) {
+            return new Branch(this.left.inter(u), this.key, this.right.inter(u));
+        } else {
+            return this.left.union(this.right).inter(u);
         }
-        return isIt;
-    }   
+    }
+    
+    public BST diff(BST u) {
+        return this.left.union(this.right).diff(u.remove(this.key));
+    }
+    
+    public boolean equal(BST u) {
+        return this.subset(u) && u.subset(this);
+    }
+    
+    public boolean subset(BST u) {
+        return u.member(this.key) && this.left.subset(u) && this.right.subset(u);
+    }
 }
 
 class Empty implements BST {
@@ -87,5 +118,53 @@ class Empty implements BST {
         BST bot = new Empty();
         BST addElt = new Branch(bot, elt, bot);
         return addElt;
+    }
+    
+    public BST remove(int elt) {
+        return new Empty();
+    }
+    
+    public BST union(BST u) {
+        return u;
+    }
+    
+    public BST inter(BST u) {
+        return this;
+    }
+    
+    public BST diff(BST u) {
+        return u;
+    }
+    
+    public boolean equal(BST u) {
+        return u.isEmptyHuh();
+    }
+    
+    public boolean subset(BST u) {
+        return true;
+    }
+}
+
+class Tests {
+    public static void main( String[] args ) {
+        
+        // BST example
+        BST bot = new Empty();
+        BST t1 = new Branch(bot, 1, bot);
+        BST t3 = new Branch(bot, 3, bot);
+        BST t2 = new Branch(t1, 2, t3);
+        BST t5 = new Branch(bot, 5, bot);
+        BST t7 = new Branch(bot, 7, bot);
+        BST t6 = new Branch(t5, 6, t7);
+        BST t4 = new Branch(t2, 4, t6);
+        
+        BST a = bot.add(1).add(2).add(3);
+        BST b = bot.add(4).add(5).add(6);
+        BST c = bot.add(7).add(8).add(9);
+        
+        System.out.println("t4 should contain 4,2,1,3,6,5,7. Contains " + t4.toString());
+        System.out.println("a should be a subset of t4, and should return true. Returns" + a.subset(t4));
+        System.out.println("the union of a, b and c should have a cardinality of 9. It is" + a.union(b).union(c).cardinality());
+        
     }
 }
