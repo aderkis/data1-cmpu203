@@ -174,15 +174,18 @@ class Empty implements FiniteSet {
 }
 
 public class Tests {
-
+    
+    //Properties
+    
     //cardinality (union u t) = cardinality (t) + cardinality (u) - cardinality (inter u t)
     public static boolean unionTest(FiniteSet t, FiniteSet u) {
 	return t.union(u).cardinality() == t.cardinality() + u.cardinality() - t.inter(u).cardinality();
     }
     
-    //union (diff t u) (inter t u) = t
+    //union (difference t u) (intersection t u) = t
     public static boolean diffTest(FiniteSet t, FiniteSet u) {
-    	return t.diff(u).union(u.inter(t)).equal(u);
+        return t.diff(u).union(u.inter(t)).equal(u);
+    }
    
     //member (add t x) y = true <-> x = y \/ member t y = true
     public static boolean addMemberTest(FiniteSet t, int x, int y) {
@@ -198,8 +201,16 @@ public class Tests {
     public static boolean interMemberTest(FiniteSet t, FiniteSet u, int x) {
 	return t.inter(u).member(x) == (t.member(x) && u.member(x));
     }
+    
+    public static FiniteSet randomFiniteSet(int num) {
+        FiniteSet set = new Empty();
+        for(; num > 0; num--) {
+            set = set.add((int) (Math.random() * 100));
+        }
+        return set;
+    }
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         
         FiniteSet bot = new Empty();
         FiniteSet t1 = new Branch(bot, 1, bot);
@@ -214,10 +225,22 @@ public class Tests {
         FiniteSet b = bot.add(4).add(5).add(6);
         FiniteSet c = bot.add(7).add(8).add(9);
         
-        System.out.println("t4 should contain 4,2,1,3,6,5,7. Contains " + t4.toString());
+        System.out.println("t4: " + t4);
+        System.out.println("a: " + a);
+        System.out.println("b: " + b);
+        System.out.println("c: " + c);
         System.out.println("a should be a subset of t4, and should return true. Returns " + a.subset(t4));
-        System.out.println("the union of a, b and c should have a cardinality of 9. It is " + a.union(b).union(c).cardinality());
-        System.out.println("the difference of a from t4 should be 4,6,5,7. Contains" + a.diff(t4).toString());
+        System.out.println("The union of a, b and c should have a cardinality of 9. It is " + a.union(b).union(c).cardinality());
+        System.out.println("The difference of a from t4 should be 4,6,5,7. Contains " + a.diff(t4).toString());
+        System.out.println("a.remove(1) should be 2,3. Returns " + a.remove(1));
+        System.out.println("t4.member(7) should return true. Returns " + t4.member(7));
+        System.out.println("a.member(7) should return false. Returns " + a.member(7));
         
-    }
+        //Property Tests
+        
+        FiniteSet FSet1 = randomFiniteSet(10);
+        FiniteSet FSet2 = randomFiniteSet(10);
+        
+        System.out.println("diffTest(FSet1, FSet2) should return true. Returns " + diffTest(FSet1, FSet2));
+        }
 }
