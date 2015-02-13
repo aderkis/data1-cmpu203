@@ -23,8 +23,11 @@ interface FiniteSet {
     FiniteSet union(FiniteSet u);
     //returns a set containing everything in t and u
     
-    FiniteSet diff(FiniteSet u);
+    FiniteSet inter(FiniteSet u);
     //returns a set containing everything that is in both t and u
+    
+    FiniteSet diff(FiniteSet u);
+    //returns a set containing everything in u except those in t
     
     boolean equal(FiniteSet u);
     //determines if t and u have exactly the same elements
@@ -272,6 +275,5 @@ public class Tests {
             if (!diffTest(Set5, Set6)) {
                 System.out.println("diffTest( " + Set5 + ", " + Set6 + " failed");
             }
-        }
         }
 }
