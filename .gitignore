@@ -242,5 +242,10 @@ public class Tests {
         FiniteSet FSet2 = randomFiniteSet(10);
         
         System.out.println("diffTest(FSet1, FSet2) should return true. Returns " + diffTest(FSet1, FSet2));
+        System.out.println("unionTest(FSet1, FSet2) should return true. Returns " + unionTest(FSet1, FSet2));
+        System.out.println("FSet1.union(FSet2).cardinality() = " + FSet1.union(FSet2).cardinality());
+        System.out.println("FSet1.cardinality() = " + FSet1.cardinality());
+        System.out.println("FSet2.cardinality() = " + FSet2.cardinality());
+        System.out.println("FSet1.inter(FSet2).cardinality() = " + FSet1.inter(FSet2).cardinality());
         }
 }
