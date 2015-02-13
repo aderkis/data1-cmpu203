@@ -1,10 +1,36 @@
 interface BST {
     String toString();
+    
+    
     int cardinality();
+    //returns the number of elements in t
+    
     boolean isBranch();
+    //determines if t is non-empty
+    
     boolean isEmptyHuh();
+    //determines if t is empty
+    
     boolean member(int elt);
+    //determines if elt is in t
+    
     BST add(int elt);
+    //returns a set containing elt and everything in t
+    
+    BST remove(int elt);
+    //returns a set containing everything in t except elt
+    
+    BST union(BST u);
+    //returns a set containing everything in t and u
+    
+    BST diff(BST u);
+    //returns a set containing everything that is in both t and u
+    
+    boolean equal(BST u);
+    //determines if t and u have exactly the same elements
+    
+    boolean subset(BST u);
+    //determines if t is a subset of u
 }
 
 class Branch implements BST {
@@ -91,7 +117,11 @@ class Branch implements BST {
 
 class Empty implements BST {
     
-    Empty() {}
+    Empty() {};
+    
+    public static BST empty() {
+    	return new Empty();
+    }
     
     public String toString() {
         String theKey = ("empty");
