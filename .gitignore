@@ -202,6 +202,10 @@ public class Tests {
 	return t.inter(u).member(x) == (t.member(x) && u.member(x));
     }
     
+    public static boolean removeTest(BST t, int x) {
+        return t.subset(t.remove(x));
+    }
+    
     public static FiniteSet randomFiniteSet(int num) {
         FiniteSet set = new Empty();
         for(; num > 0; num--) {
@@ -240,6 +244,8 @@ public class Tests {
         
         FiniteSet FSet1 = randomFiniteSet(10);
         FiniteSet FSet2 = randomFiniteSet(10);
+        int x = (int) Math.random()*100;
+        int y = (int) Math.random()*100;
         
         System.out.println("diffTest(FSet1, FSet2) should return true. Returns " + diffTest(FSet1, FSet2));
         System.out.println("unionTest(FSet1, FSet2) should return true. Returns " + unionTest(FSet1, FSet2));
@@ -247,5 +253,9 @@ public class Tests {
         System.out.println("FSet1.cardinality() = " + FSet1.cardinality());
         System.out.println("FSet2.cardinality() = " + FSet2.cardinality());
         System.out.println("FSet1.inter(FSet2).cardinality() = " + FSet1.inter(FSet2).cardinality());
+        System.out.println("addMemberTest(FSet1,(int) Math.random()*100,(int) Math.random()*100) should return true. Returns " + addMemberTest(FSet1, x, y));
+        System.out.println("unionMemberTest(FSet1, FSet2,(int) Math.random()*100) should return true. Returns " + unionMemberTest(FSet1, FSet2, x));
+        System.out.println("interMemberTest(FSet1, FSet2,(int) Math.random()*100) should return true. Returns " + interMemberTest(FSet1, FSet2, y));
+        System.out.println("removeTest(FSet1, (int) Math.random()*100) should return true. Returns " + removeTest(FSet1, x));
         }
 }
