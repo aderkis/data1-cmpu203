@@ -151,6 +151,10 @@ class Tests {
     public static boolean unionTest(BST t, BST u) {
 	return t.union(u).cardinality() == t.cardinality() + u.cardinality() - t.inter(u).cardinality();
     }
+    
+    //union (diff t u) (inter t u) = t
+    public static boolean diffTest(BST t, BST u) {
+    	return t.diff(u).union(u.inter(t)).equal(u);
    
     //member (add t x) y = true <-> x = y \/ member t y = true
     public static boolean addMemberTest(BST t, int x, int y) {
