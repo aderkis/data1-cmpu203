@@ -1,4 +1,4 @@
-interface BST {
+interface FiniteSet {
     String toString();
     
     
@@ -14,39 +14,38 @@ interface BST {
     boolean member(int elt);
     //determines if elt is in t
     
-    BST add(int elt);
+    FiniteSet add(int elt);
     //returns a set containing elt and everything in t
     
-    BST remove(int elt);
+    FiniteSet remove(int elt);
     //returns a set containing everything in t except elt
     
-    BST union(BST u);
+    FiniteSet union(FiniteSet u);
     //returns a set containing everything in t and u
     
-    BST diff(BST u);
+    FiniteSet diff(FiniteSet u);
     //returns a set containing everything that is in both t and u
     
-    boolean equal(BST u);
+    boolean equal(FiniteSet u);
     //determines if t and u have exactly the same elements
     
-    boolean subset(BST u);
+    boolean subset(FiniteSet u);
     //determines if t is a subset of u
 }
 
-class Branch implements BST {
-    BST left;
+class Branch implements FiniteSet {
+    FiniteSet left;
     int key;
-    BST right;
+    FiniteSet right;
     
-    Branch (BST left, int key, BST right) {
+    Branch (FiniteSet left, int key, FiniteSet right) {
         this.left = left;
         this.key = key;
         this.right = right;
     }
     
     public String toString() {
-        String theKey = ("(" + this.key + this.left.toString() + this.right.toString() + ")");
-        return theKey;
+        return this.key + "," + this.left.toString() + this.right.toString();
     }
     
     public boolean isBranch() {
@@ -70,7 +69,7 @@ class Branch implements BST {
             return this.right.member(elt);
     }
     
-    public BST add(int elt) {
+    public FiniteSet add(int elt) {
         if (elt == this.key) {
             return this;
         } else if (elt < this.key) {
@@ -80,7 +79,7 @@ class Branch implements BST {
         }
     }
     
-    public BST remove(int elt) {
+    public FiniteSet remove(int elt) {
         if (elt < this.key) {
             return new Branch(this.left.remove(elt),this.key, this.right);
         } else if (elt > this.key) {
@@ -90,11 +89,11 @@ class Branch implements BST {
         }
     }
     
-    public BST union(BST u) {
+    public FiniteSet union(FiniteSet u) {
         return u.union(this.left).union(this.right).add(this.key);
     }
     
-    public BST inter(BST u) {
+    public FiniteSet inter(FiniteSet u) {
         if(u.member(this.key)) {
             return new Branch(this.left.inter(u), this.key, this.right.inter(u));
         } else {
@@ -102,30 +101,29 @@ class Branch implements BST {
         }
     }
     
-    public BST diff(BST u) {
+    public FiniteSet diff(FiniteSet u) {
         return this.left.union(this.right).diff(u.remove(this.key));
     }
     
-    public boolean equal(BST u) {
+    public boolean equal(FiniteSet u) {
         return this.subset(u) && u.subset(this);
     }
     
-    public boolean subset(BST u) {
+    public boolean subset(FiniteSet u) {
         return u.member(this.key) && this.left.subset(u) && this.right.subset(u);
     }
 }
 
-class Empty implements BST {
+class Empty implements FiniteSet {
     
     Empty() {};
     
-    public static BST empty() {
+    public static FiniteSet empty() {
     	return new Empty();
     }
     
     public String toString() {
-        String theKey = ("empty");
-        return theKey;
+        return "";
     }
     
     public int cardinality() {
@@ -144,82 +142,82 @@ class Empty implements BST {
         return false;
     }
     
-    public BST add(int elt) {
-        BST bot = new Empty();
-        BST addElt = new Branch(bot, elt, bot);
+    public FiniteSet add(int elt) {
+        FiniteSet bot = new Empty();
+        FiniteSet addElt = new Branch(bot, elt, bot);
         return addElt;
     }
     
-    public BST remove(int elt) {
+    public FiniteSet remove(int elt) {
         return new Empty();
     }
     
-    public BST union(BST u) {
+    public FiniteSet union(FiniteSet u) {
         return u;
     }
     
-    public BST inter(BST u) {
+    public FiniteSet inter(FiniteSet u) {
         return this;
     }
     
-    public BST diff(BST u) {
+    public FiniteSet diff(FiniteSet u) {
         return u;
     }
     
-    public boolean equal(BST u) {
+    public boolean equal(FiniteSet u) {
         return u.isEmptyHuh();
     }
     
-    public boolean subset(BST u) {
+    public boolean subset(FiniteSet u) {
         return true;
     }
 }
 
-class Tests {
+public class Tests {
 
     //cardinality (union u t) = cardinality (t) + cardinality (u) - cardinality (inter u t)
-    public static boolean unionTest(BST t, BST u) {
+    public static boolean unionTest(FiniteSet t, FiniteSet u) {
 	return t.union(u).cardinality() == t.cardinality() + u.cardinality() - t.inter(u).cardinality();
     }
     
     //union (diff t u) (inter t u) = t
-    public static boolean diffTest(BST t, BST u) {
+    public static boolean diffTest(FiniteSet t, FiniteSet u) {
     	return t.diff(u).union(u.inter(t)).equal(u);
    
     //member (add t x) y = true <-> x = y \/ member t y = true
-    public static boolean addMemberTest(BST t, int x, int y) {
+    public static boolean addMemberTest(FiniteSet t, int x, int y) {
 	return t.add(x).member(y) == (x == y || t.member(y));
     } 
 
     //member (union s s') x = true <-> member s x = true \/ member s' x = true
-    public static boolean unionMemberTest(BST t, BST u, int x) {
+    public static boolean unionMemberTest(FiniteSet t, FiniteSet u, int x) {
 	return t.union(u).member(x) == (t.member(x) || u.member(x));
     }
     
     //member (inter s s') x = true <-> member s x = true /\ member s' x = true
-    public static boolean interMemberTest(BST t, BST u, int x) {
+    public static boolean interMemberTest(FiniteSet t, FiniteSet u, int x) {
 	return t.inter(u).member(x) == (t.member(x) && u.member(x));
     }
 
     public static void main( String[] args ) {
         
-        // BST example
-        BST bot = new Empty();
-        BST t1 = new Branch(bot, 1, bot);
-        BST t3 = new Branch(bot, 3, bot);
-        BST t2 = new Branch(t1, 2, t3);
-        BST t5 = new Branch(bot, 5, bot);
-        BST t7 = new Branch(bot, 7, bot);
-        BST t6 = new Branch(t5, 6, t7);
-        BST t4 = new Branch(t2, 4, t6);
+        FiniteSet bot = new Empty();
+        FiniteSet t1 = new Branch(bot, 1, bot);
+        FiniteSet t3 = new Branch(bot, 3, bot);
+        FiniteSet t2 = new Branch(t1, 2, t3);
+        FiniteSet t5 = new Branch(bot, 5, bot);
+        FiniteSet t7 = new Branch(bot, 7, bot);
+        FiniteSet t6 = new Branch(t5, 6, t7);
+        FiniteSet t4 = new Branch(t2, 4, t6);
         
-        BST a = bot.add(1).add(2).add(3);
-        BST b = bot.add(4).add(5).add(6);
-        BST c = bot.add(7).add(8).add(9);
+        FiniteSet a = bot.add(1).add(2).add(3);
+        FiniteSet b = bot.add(4).add(5).add(6);
+        FiniteSet c = bot.add(7).add(8).add(9);
         
         System.out.println("t4 should contain 4,2,1,3,6,5,7. Contains " + t4.toString());
-        System.out.println("a should be a subset of t4, and should return true. Returns" + a.subset(t4));
-        System.out.println("the union of a, b and c should have a cardinality of 9. It is" + a.union(b).union(c).cardinality());
+        System.out.println("a should be a subset of t4, and should return true. Returns " + a.subset(t4));
+        System.out.println("the union of a, b and c should have a cardinality of 9. It is " + a.union(b).union(c).cardinality());
+        System.out.println("the difference of a from t4 should be 4,6,5,7. Contains" + a.diff(t4).toString());
         
     }
 }
